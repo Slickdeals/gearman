@@ -142,7 +142,7 @@ class GearmanContext implements Context
         }
         else
         {
-            $client->addServers(implode(',', $this->config['serverList']));
+            $client->addServers($this->config['serverList']);
         }
     }
 }
