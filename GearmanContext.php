@@ -117,7 +117,7 @@ class GearmanContext implements Context
     {
         if (false == $this->client) {
             $this->client = new \GearmanClient();
-            $this->client->addServer($this->config['host'], $this->config['port']);
+            $this->addServersFromConfig($this->client);
         }
 
         return $this->client;
@@ -126,8 +126,23 @@ class GearmanContext implements Context
     public function createWorker(): \GearmanWorker
     {
         $worker = new \GearmanWorker();
-        $worker->addServer($this->config['host'], $this->config['port']);
+        $this->addServersFromConfig($worker);
 
         return $worker;
+    }
+
+    /**
+     * @param \GearmanWorker|\GearmanClient $client
+     */
+    private function addServersFromConfig($client)
+    {
+        if (empty($this->config['serverList']))
+        {
+            $client->addServer($this->config['host'], $this->config['port']);
+        }
+        else
+        {
+            $client->addServers(implode(',', $this->config['serverList']));
+        }
     }
 }
